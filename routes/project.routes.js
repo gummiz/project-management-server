@@ -22,6 +22,7 @@ router.post("/projects", (req, res, next) => {
 // GET /projects
 router.get("/projects", (req, res, next) => {
   Project.find()
+
     .then((projectsFromDB) => {
       res.json(projectsFromDB);
     })
