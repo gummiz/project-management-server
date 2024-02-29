@@ -22,7 +22,7 @@ router.post("/projects", (req, res, next) => {
 // GET /projects
 router.get("/projects", (req, res, next) => {
   Project.find()
-
+    .populate("tasks")
     .then((projectsFromDB) => {
       res.json(projectsFromDB);
     })
@@ -44,6 +44,7 @@ router.get("/projects/:projectId", (req, res, next) => {
   }
 
   Project.findById(projectId)
+  .populate("tasks")
     .then((projectDetails) => {
       res.json(projectDetails);
     })
@@ -67,6 +68,7 @@ router.put("/projects/:projectId", (req, res, next) => {
   const { title, description } = req.body;
 
   Project.findByIdAndUpdate(projectId, { title, description }, { new: true })
+  .populate("tasks")
     .then((result) => {
       res.status(200).json({ message: "Updated", result });
     })
