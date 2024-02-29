@@ -22,7 +22,7 @@ mongoose
   .catch((err) => console.error("Error connecting to Mongo", err));
 
 // use definded routes
-app.use("/dashboard", require("./routes/project.routes"));
+app.use("/", require("./routes/project.routes"));
 
 
 
