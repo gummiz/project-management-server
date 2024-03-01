@@ -2,8 +2,11 @@ const router = require("express").Router();
 const Project = require("../models/Project.model");
 const mongoose = require("mongoose");
 
+const {isAuthenticated} = require("../middleware/jwt.middleware")
+
+
 // POST /projects
-router.post("/projects", (req, res, next) => {
+router.post("/projects", isAuthenticated, (req, res, next) => {
   // const {title, price} = req.body;
   const { title, description } = req.body;
 
@@ -56,7 +59,7 @@ router.get("/projects/:projectId", (req, res, next) => {
 });
 
 // Update Project
-router.put("/projects/:projectId", (req, res, next) => {
+router.put("/projects/:projectId", isAuthenticated, (req, res, next) => {
   const { projectId } = req.params;
   
   // validate projectId
@@ -79,7 +82,7 @@ router.put("/projects/:projectId", (req, res, next) => {
 
 // delete
 
-router.delete("/projects/:projectId", (req, res, next) => {
+router.delete("/projects/:projectId", isAuthenticated, (req, res, next) => {
   const { projectId } = req.params;
 
   // validate projectId

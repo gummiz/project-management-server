@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const User = require("../models/User.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken") 
+require("dotenv/config")
 
 // /auth/signup
 router.post("/signup", (req, res, next) => {
@@ -61,5 +63,56 @@ router.post("/signup", (req, res, next) => {
       res.status(500).json({ message: "internal server error" });
     });
 });
+
+
+// Login
+router.post("/login", (req, res, next) =>{
+
+
+    const { email, password} = req.body
+
+      // Check if the email or password is provided as an empty string
+  if (email === "" || password === "") {
+    res.status(400).json({ message: "Provide email and password" });
+    return;
+  }
+
+    User.findOne({email})
+    .then((foundUser) => {
+        if(!foundUser) {
+            res.status(404).json({message: "User not found."})
+        } 
+        
+        //check if provided password is correct witht the one in the DB: compareSync(s, hash)
+        const passwordCorrect = bcrypt.compareSync(password, foundUser.password)
+        
+        if (passwordCorrect) {
+
+             // Deconstruct the user object to omit the password
+            const { _id, email, name } = foundUser
+
+            // Create an object that will be set as the token payload
+            const payload = { _id, email, name }
+
+            // create and sign the tolen
+            const authToken = jwt.sign(
+                payload,
+                process.env.TOKEN_SECRET,
+                { algorithm: "HS256", expiresIn: "6h"}
+            )
+
+
+
+            res.json({authToken: authToken})
+        } else {
+            res.status(404).json({message: `wrong Password`})
+        }
+    }).catch((err) => {
+        res.status(500).json({ message: "internal server error" });
+    });
+
+
+})
+
 
 module.exports = router;
