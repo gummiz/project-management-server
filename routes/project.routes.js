@@ -58,7 +58,7 @@ router.get("/projects/:projectId", (req, res, next) => {
 // Update Project
 router.put("/projects/:projectId", (req, res, next) => {
   const { projectId } = req.params;
-
+  
   // validate projectId
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
     res.status(400).json({ message: "Specified id is not valid" });

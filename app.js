@@ -22,6 +22,7 @@ mongoose
   .catch((err) => console.error("Error connecting to Mongo", err));
 
 // ROUTES
+app.use("/auth", require("./routes/auth.routes"));
 app.use("/", require("./routes/project.routes"));
 app.use("/", require("./routes/tasks.routes"));
 
