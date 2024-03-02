@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken") 
 require("dotenv/config")
 
+const {isAuthenticated} = require("../middleware/jwt.middleware")
+
+
 // /auth/signup
 router.post("/signup", (req, res, next) => {
   const { email, password, name } = req.body;
@@ -56,7 +59,9 @@ router.post("/signup", (req, res, next) => {
        return User.create(newUser);
     })
     .then((createdUser) => {
-        res.status(200).json(createdUser)
+        const {email, name, _id} = createdUser;
+        const user = { email, name, _id}
+        res.status(201).json({user: user});
     })
     .catch((err) => {
       console.log(err);
@@ -113,6 +118,18 @@ router.post("/login", (req, res, next) =>{
 
 
 })
+
+// GET  /auth/verify  -  Used to verify JWT stored on the client
+router.get('/verify', isAuthenticated, (req, res, next) => {       
+ 
+    // If JWT token is valid the payload gets decoded by the
+    // isAuthenticated middleware and made available on `req.payload`
+    console.log(`req.payload`, req.payload);
+   
+    // Send back the object with user data
+    // previously set as the token payload
+    res.status(200).json(req.payload);
+  });
 
 
 module.exports = router;
